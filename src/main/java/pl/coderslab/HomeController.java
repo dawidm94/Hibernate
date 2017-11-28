@@ -2,6 +2,8 @@ package pl.coderslab;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -11,13 +13,30 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class HomeController {
+	
+	@ModelAttribute("brands") // - w kazdym jsp jest atrybut brands do pobrania
+	public List<Brand> getBrands(){
+		return brandDao.getList();
+	}
+	
+	@ModelAttribute("skills")
+	public Collection<String> skills() {
+	List<String> skills = new ArrayList<String>();
+	skills.add("Java");
+	skills.add("Php");
+	skills.add("python");
+	skills.add("ruby");
+	return skills;
+	}
 	
 	@Autowired
 	FileLoader fileLoader;
@@ -72,11 +91,17 @@ public class HomeController {
 	        return "products";
 	}
 	
-	@RequestMapping("/products/add")
-	public String addtocart(HttpSession ses) {
-	    Product newProd = Product.genRand();
-	    productDao.saveProduct(newProd);
-	        return "redirect:./";
+	@RequestMapping(value = "/products/add", method = RequestMethod.GET)
+	public String addtocartForm(Model model) {
+		Product product = new Product();
+		model.addAttribute("product", product);
+	    return "addProductForm";
+	}
+	
+	@RequestMapping(value = "/products/add", method = RequestMethod.POST)
+	public String addtocart(@ModelAttribute Product product) {
+		productDao.saveProduct(product);
+	    return "redirect:/products";
 	}
 	
 	@RequestMapping("/products/delete/{id}")
@@ -143,5 +168,74 @@ public class HomeController {
 	    brand.setName(name);
 	    brandDao.update(brand);
 	        return "redirect:./";
+	}
+	
+	@Autowired
+	ClientDao clientDao;
+	
+	@RequestMapping("/clients")
+	public String showClients(Model model) {
+		List<Client> clients = clientDao.getList();
+	        model.addAttribute("clients", clients);
+	        return "clients";
+	}
+	
+	@RequestMapping(value = "/clients/add", method = RequestMethod.GET)
+	public String addClientForm(Model model) {
+		Client client = new Client();
+		model.addAttribute("client",client);
+	        return "addClientForm";
+	}
+	
+	@RequestMapping(value = "/clients/add", method = RequestMethod.POST)
+	public String addClient(@ModelAttribute Client client) {  
+		clientDao.saveClient(client);
+		return "redirect:/clients";
+	}
+	
+	@RequestMapping(value = "/clients/edit/{id}", method = RequestMethod.GET)
+	public String editClientForm(Model model, @PathVariable long id) {
+		Client client = clientDao.findById(id);
+	        model.addAttribute("client", client);
+	        return "editClientForm";
+	}
+	
+	@RequestMapping(value = "/clients/edit/{id}", method = RequestMethod.POST)
+	public String editClient(@ModelAttribute Client client) {
+			clientDao.update(client);
+	        return "redirect:/clients";
+	}
+	
+	@Autowired
+	OrderDao orderDao;
+	
+	@RequestMapping("/orders")
+	public String showOrders(Model model) {
+		List<Order> orders = orderDao.getList();
+	        model.addAttribute("orders", orders);
+	        return "orders";
+	}
+	
+	@ModelAttribute(name="clients")
+	public List<Client> getClients(){
+		return clientDao.getList();
+	}
+	
+	@ModelAttribute(name="products")
+	public List<Product> getProducts(){
+		return productDao.getList();
+	}
+	
+	@RequestMapping(value = "/orders/add", method = RequestMethod.GET)
+	public String addOrderForm(Model model) {
+		Order order = new Order();
+		model.addAttribute("order",order);
+	        return "addOrderForm";
+	}
+	
+	@RequestMapping(value = "/orders/add", method = RequestMethod.POST)
+	public String addOrder(@ModelAttribute Order order) {  
+		orderDao.saveOrder(order);
+		return "redirect:/orders";
 	}
 }

@@ -9,10 +9,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-<a href="<c:url value="products/add"/>">Add</a>
+<a href="./add">Add</a>
 <hr>
-<c:forEach items="${products}" var="product">
-<div><u>${product.brand}</u> <b>${product.name}</b> <fmt:formatNumber value = "${product.price}" type = "currency"/> <a href="./edit/${product.id}">Edit</a> <a href="./delete/${product.id}">Delete</a>  </div>
+<c:forEach items="${orders}" var="order">
+<div><b>Client: ${order.client.lastName}</b>, product: ${order.product.name} <a href="./edit/${order.id}">Edit</a> <a href="./delete/${order.id}">Delete</a>  </div>
 </c:forEach>
 
 <hr>
