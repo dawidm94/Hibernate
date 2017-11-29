@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import pl.coderslab.repository.ClientRepository;
+import pl.coderslab.repository.OrderRepository;
+
 @Controller
 public class HomeController {
 	
@@ -173,9 +176,13 @@ public class HomeController {
 	@Autowired
 	ClientDao clientDao;
 	
+	@Autowired
+	ClientRepository clientRepository;
+	
 	@RequestMapping("/clients")
 	public String showClients(Model model) {
-		List<Client> clients = clientDao.getList();
+//		List<Client> clients = clientDao.getList();
+		List<Client> clients = clientRepository.findByLastNameOrFirstName("Kowalski");
 	        model.addAttribute("clients", clients);
 	        return "clients";
 	}
@@ -209,9 +216,12 @@ public class HomeController {
 	@Autowired
 	OrderDao orderDao;
 	
+	@Autowired
+	OrderRepository orderRepository;
+	
 	@RequestMapping("/orders")
 	public String showOrders(Model model) {
-		List<Order> orders = orderDao.getList();
+		List<Order> orders = orderRepository.findAll();
 	        model.addAttribute("orders", orders);
 	        return "orders";
 	}

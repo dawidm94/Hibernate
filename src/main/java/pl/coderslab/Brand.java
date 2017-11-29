@@ -29,7 +29,7 @@ public class Brand {
 	private long id;
 	private String name;
 	
-	@OneToMany(mappedBy = "brand",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "brand",cascade = CascadeType.REMOVE)
 	private List<Product> products = new ArrayList<>();
 	
 	public String getName() {

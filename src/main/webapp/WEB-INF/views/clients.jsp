@@ -12,7 +12,7 @@
 <a href="<c:url value="/clients/add"/>">Add</a>
 <hr>
 <c:forEach items="${clients}" var="client">
-<div><b>${client.firstName} ${client.lastName}</b> <a href="<c:url value="/clients/edit/${client.id}"/>">Edit</a> <a href="<c:url value="./clients/delete/${client.id}"/>">Delete</a>  </div>
+<div><b>${client.firstName} ${client.lastName}</b> <a href="<c:url value="/clients/edit/${client.id}"/>">Edit</a> <a href="<c:url value="/clients/delete/${client.id}"/>">Delete</a>  </div>
 </c:forEach>
 
 <hr>
